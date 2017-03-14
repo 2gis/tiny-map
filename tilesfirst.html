@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tiles first</title>
+</head>
+<body>
+<style>
+    html,body { height: 100%; margin: 0; padding: 0; }
+    #min-map, #mean-map, #map { width: 100%; height: 100%; }
+    .container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        cursor: wait;
+    }
+    ._notLoaded .leaflet-container {
+        background: none;
+    }
+</style>
+<div class="container">
+    <div id="min-map" style="background: #f7f3df;"></div>
+</div>
+<div class="container _notLoaded" id="mapParent">
+    <div id="map"></div>
+</div>
+<script src=./index.js></script>
+<script src="//maps.api.2gis.ru/2.0/loader.js"></script>
+<script>
+    var minMap = new MinMap(document.getElementById('min-map'), {
+        center: [82.897440725094, 54.980156831455],
+        zoom: 17,
+        tileUrl: '//tile{s}.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=1'
+    });
+</script>
+<script>
+    var map;
+    DG.then(function() {
+        map = DG.map('map', {
+            center: [54.980156831455, 82.897440725094],
+            zoom: 17
+        });
+
+        setTimeout(function() {
+            minMap.remove();
+            document.getElementById('mapParent').classList.remove('_notLoaded');
+        }, 300);
+    });
+</script>
+</body>
+</html>

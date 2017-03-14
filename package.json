@@ -1,0 +1,14 @@
+{
+  "name": "minimal-map",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "uglifyjs index.js -mc -o index.min.js"
+  },
+  "author": "Mstislav Zhivodkov",
+  "license": "MIT",
+  "devDependencies": {
+    "uglify-js": "^2.8.12"
+  }
+}
