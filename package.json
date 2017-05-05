@@ -1,5 +1,5 @@
 {
-  "name": "tiny-map",
+  "name": "@2gis/tiny-map",
   "version": "0.0.1",
   "description": "A tiny script for displaying a static map with tiles",
   "author": {
