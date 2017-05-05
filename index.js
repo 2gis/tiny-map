@@ -1,17 +1,17 @@
 /**
- * Очень короткий скрипт для отображения карты.
- * С картой нельзя взаимодействовать, у неё есть только метод remove.
+ * A tiny script for displaying a static map with tiles.
+ * You can't interact with the map, it has only remove method.
  * 
- * @param {HTMLElement} container HTML элемент куда вставится карта
+ * @param {HTMLElement} container HTML Element that will be contains the map
  * @param {Object} options
- * @param {[number, number]} [options.center] Центр в координатах LngLat
- * @param {number} [options.zoom] Зум
- * @param {string} [options.tileUrl] Шаблон для урла тайлов, например, //tile{s}.maps.2gis.com/tiles?x={x}&y={y}&z={z}
- * @param {string} [options.subdomains='0123'] Поддомены, например, '0123'
- * @param {?[number, number]} [options.size] Размер контейнера карты.
- * Необязательный параметр, но, если вы не хотите вызывать дополнительный reflow, нужно указать.
+ * @param {number[]} [options.center] Geographical center of the map, contains two numbers: [longitude, latitude]
+ * @param {number} [options.zoom] Zoom of the map
+ * @param {string} [options.tileUrl] URL template for tiles, e.g. //tile{s}.maps.2gis.com/tiles?x={x}&y={y}&z={z}
+ * @param {string} [options.subdomains='0123'] Subdomains of the tile server, e.g. '0123'
+ * @param {?number} [options.size] Size of the map container. This is optional parameter, but set it, if you won't cause
+ * additional reflow.
  */
-function MinMap(container, options) {
+function TinyMap(container, options) {
     this._center = options.center;
     this._zoom = options.zoom;
     this._tileUrl = options.tileUrl;
@@ -32,14 +32,14 @@ function MinMap(container, options) {
 
 	var halfSize = [this._size[0] / 2, this._size[1] / 2];
     var minTile = [
-        (pixelCenter[0] - halfSize[0]) / tileSize,
-        (pixelCenter[1] - halfSize[1]) / tileSize
-    ].map(Math.floor);
+        Math.floor((pixelCenter[0] - halfSize[0]) / tileSize),
+        Math.floor((pixelCenter[1] - halfSize[1]) / tileSize)
+    ];
 
     var maxTile = [
-        (pixelCenter[0] + halfSize[0]) / tileSize,
-        (pixelCenter[1] + halfSize[1]) / tileSize
-    ].map(Math.ceil);
+        Math.ceil((pixelCenter[0] + halfSize[0]) / tileSize),
+        Math.ceil((pixelCenter[1] + halfSize[1]) / tileSize)
+    ];
 
     var centerTile = [
         minTile[0] + Math.floor((maxTile[0] - 1 - minTile[0]) / 2),
@@ -77,9 +77,9 @@ function MinMap(container, options) {
 }
 
 /**
- * Удаляет все тайлы из контейнера карты
+ * Removes the map
  */
-MinMap.prototype.remove = function() {
+TinyMap.prototype.remove = function() {
     var tile;
 
     while (tile = this.container.firstChild) {
@@ -89,11 +89,11 @@ MinMap.prototype.remove = function() {
     this._removed = true;
 };
 
-MinMap.prototype._distance = function(a, b) {
+TinyMap.prototype._distance = function(a, b) {
     return Math.sqrt((a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]));
 };
 
-MinMap.prototype._getUrl = function(x, y) {
+TinyMap.prototype._getUrl = function(x, y) {
     return this._tileUrl
         .replace('{s}', this._getSubdomains(x, y))
         .replace('{x}', x)
@@ -101,11 +101,11 @@ MinMap.prototype._getUrl = function(x, y) {
         .replace('{z}', this._zoom);
 };
 
-MinMap.prototype._getSubdomains = function(x, y) {
+TinyMap.prototype._getSubdomains = function(x, y) {
 	return this._subdomains[Math.abs(x + y) % this._subdomains.length];
 };
 
-MinMap.prototype._lngLatToPoint = function(lngLat, zoom) {
+TinyMap.prototype._lngLatToPoint = function(lngLat, zoom) {
 	var point = this._project(lngLat);
 	var scale = 256 * Math.pow(2, zoom);
     var k = 0.5 / (Math.PI * this._R);
@@ -114,7 +114,7 @@ MinMap.prototype._lngLatToPoint = function(lngLat, zoom) {
     return point;
 };
 
-MinMap.prototype._project = function(lngLat) {
+TinyMap.prototype._project = function(lngLat) {
 	var d = Math.PI / 180;
     var lat = Math.max(Math.min(this._MAX_LATITUDE, lngLat[1]), -this._MAX_LATITUDE);
     var sin = Math.sin(lat * d);

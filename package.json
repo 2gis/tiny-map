@@ -1,13 +1,21 @@
 {
-  "name": "minimal-map",
+  "name": "tiny-map",
   "version": "0.0.1",
-  "description": "",
+  "description": "A tiny script for displaying a static map with tiles",
+  "author": {
+    "name": "Mstislav Zhivodkov",
+    "email": "stevemyz@gmail.com",
+    "url": "https://trufi.github.io/"
+  },
+  "license": "BSD-2-Clause",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:2gis/tiny-map.git"
+  },
   "main": "index.js",
   "scripts": {
     "build": "uglifyjs index.js -mc -o index.min.js"
   },
-  "author": "Mstislav Zhivodkov",
-  "license": "MIT",
   "devDependencies": {
     "uglify-js": "^2.8.12"
   }
