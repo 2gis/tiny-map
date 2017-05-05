@@ -1,6 +1,6 @@
 {
   "name": "@2gis/tiny-map",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A tiny script for displaying a static map with tiles",
   "author": {
     "name": "Mstislav Zhivodkov",
