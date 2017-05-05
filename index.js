@@ -3,7 +3,7 @@
  * You can't interact with the map.
  * /
 
-/**
+ /**
  * @typedef {Object} options
  * @property {number[]} center Geographical center of the map, contains two numbers: [longitude, latitude]
  * @property {number} zoom Zoom of the map
@@ -24,7 +24,23 @@ function tinyMap(container, options) {
     var R = 6378137;
     var maxLat = 85.0511287798;
 
-    var pixelCenter = lngLatToPoint(options.center, options.zoom);
+    var math = Math;
+    var optionsSubdomains = options.subdomains;
+    var optionsCenter = options.center;
+    var optionsZoom = options.zoom;
+
+    var d = math.PI / 180;
+    var lat = math.max(math.min(maxLat, optionsCenter[1]), -maxLat);
+    var sin = math.sin(lat * d);
+    var pixelCenter = [
+        R * optionsCenter[0] * d,
+        R * math.log((1 + sin) / (1 - sin)) / 2
+    ];
+
+    var scale = 256 * math.pow(2, optionsZoom);
+    var k = 0.5 / (math.PI * R);
+    pixelCenter[0] = scale * (k * pixelCenter[0] + 0.5);
+    pixelCenter[1] = scale * (-k * pixelCenter[1] + 0.5);
 
     var size = options.size || [container.offsetWidth, container.offsetHeight];
     var halfSize = [size[0] / 2, size[1] / 2];
@@ -42,41 +58,17 @@ function tinyMap(container, options) {
     for (var y = minTile[1]; y < maxTile[1]; y++) {
         for (var x = minTile[0]; x < maxTile[0]; x++) {
             var tile = new Image();
-            tile.style.cssText = 'position: absolute;' +
+            tile.style.cssText = 'position:absolute;' +
                 'left:' + (halfSize[0] + x * tileSize - pixelCenter[0] | 0) + 'px;' +
                 'top:' + (halfSize[1] + y * tileSize - pixelCenter[1] | 0) + 'px;' +
-                'width:' + tileSize + 'px;' + 
+                'width:' + tileSize + 'px;' +
                 'height:' + tileSize + 'px';
-            tile.src = getUrl(x, y);
+            tile.src = options.tileUrl
+                .replace('{s}', optionsSubdomains[math.abs(x + y) % optionsSubdomains.length])
+                .replace('{x}', x)
+                .replace('{y}', y)
+                .replace('{z}', optionsZoom);
             container.appendChild(tile);
         }
-    }
-
-    function getUrl(x, y) {
-        return options.tileUrl
-            .replace('{s}', options.subdomains[Math.abs(x + y) % options.subdomains.length])
-            .replace('{x}', x)
-            .replace('{y}', y)
-            .replace('{z}', options.zoom);
-    }
-
-    function lngLatToPoint(lngLat, zoom) {
-        var point = project(lngLat);
-        var scale = 256 * Math.pow(2, zoom);
-        var k = 0.5 / (Math.PI * R);
-        point[0] = scale * (k * point[0] + 0.5);
-        point[1] = scale * (-k * point[1] + 0.5);
-        return point;
-    }
-
-    function project(lngLat) {
-        var d = Math.PI / 180;
-        var lat = Math.max(Math.min(maxLat, lngLat[1]), -maxLat);
-        var sin = Math.sin(lat * d);
-
-        return [
-            R * lngLat[0] * d,
-            R * Math.log((1 + sin) / (1 - sin)) / 2
-        ];
     }
 }
