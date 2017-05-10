@@ -18,8 +18,6 @@
  * @param {options} options
  */
 function tinyMap(container, options) {
-    container.style.cssText = 'position:relative;overflow:hidden';
-
     var tileSize = 256;
     var R = 6378137;
     var maxLat = 85.0511287798;
@@ -45,7 +43,7 @@ function tinyMap(container, options) {
             tile.style.cssText = 'position: absolute;' +
                 'left:' + (halfSize[0] + x * tileSize - pixelCenter[0] | 0) + 'px;' +
                 'top:' + (halfSize[1] + y * tileSize - pixelCenter[1] | 0) + 'px;' +
-                'width:' + tileSize + 'px;' + 
+                'width:' + tileSize + 'px;' +
                 'height:' + tileSize + 'px';
             tile.src = getUrl(x, y);
             container.appendChild(tile);
